@@ -1,12 +1,13 @@
 <template>
     <div>
         <Header/>
-
             <div class="container izquierda">
-
-                <button class="btn btn-primary" v-on:click="nuevo()" >Nuevo usuario</button>
-                <button class="btn btn-info mx-4" v-on:click="consultarInactivos()" >Usuarios Inactivos</button>
+                <div class="btn-group" role="group" aria-label="Basic example">
+                    <button class="btn btn-primary" v-on:click="nuevo()" >Nuevo usuario</button>
+                <button class="btn btn-info" v-on:click="consultarInactivos()" >Usuarios Inactivos</button>
                 <button class="btn btn-info" v-on:click="consultarActivos()" >Usuarios Activos</button>
+                </div>
+                
                 <br><br>
 
 

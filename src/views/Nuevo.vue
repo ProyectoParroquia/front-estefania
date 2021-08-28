@@ -63,11 +63,11 @@
                         </div>
                     </div>
 
-
-                    <div class="form-group">
-                      <button type="button" class="btn btn-primary" v-on:click="guardar()" >Guardar</button>
-                      <button type="button" class="btn btn-dark margen" v-on:click="salir()"  >Salir</button>
-                    </div> 
+                    <div class="btn-group" role="group" aria-label="Basic example">
+                        <button type="button" class="btn btn-primary" v-on:click="guardar()" >Guardar</button>
+                        <button type="button" class="btn btn-dark margen" v-on:click="salir()"  >Salir</button>
+                    </div>
+                    
                 </form>
 
 
@@ -119,11 +119,12 @@ export default {
                 this.makeToast("Hecho",data.data.success,"success");
                 setTimeout(this.salir,1800);
                 }else{
-                    /* data.data.err.errors.forEach(element => {
+                    data.data.err.errors.forEach(element => {
                         this.makeToast("Error",element.message,"danger");
-                    }); */
+                    });
+                    
 
-                    console.log(data.data.mensage);
+                    console.log(data.data.err);
                     this.makeToast("Error",data.data.mensage,"danger");
                 }
                 

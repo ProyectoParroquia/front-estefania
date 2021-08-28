@@ -63,12 +63,24 @@
                         
                     </div>
 
-                    <div class="form-group">
+                    <div class="btn-group" role="group" aria-label="Basic example">
                       <button type="button" class="btn btn-primary" v-on:click="editar()" >Editar</button>
-                      <button type="button" class="btn btn-danger margen mx-4" v-on:click="functionBtn(botonForm.valor, botonForm.idUsuario)" >{{botonForm.valor}}</button>
-                      <button type="button" class="btn btn-dark margen" v-on:click="salir()"  >Salir</button>
+                      <button type="button" class="btn btn-danger " v-on:click="open()" >{{botonForm.valor}}</button>
+                      <button type="button" class="btn btn-dark " v-on:click="salir()"  >Salir</button>
                     </div> 
                 </form>
+                
+
+                 <transition name="fade">
+        <div class="popup-modal" v-if="isVisible">
+            <div class="window">
+              <h4>Esta Seguro De Realizar Esta Accion?</h4>
+
+              <button class="btn btn-warning" v-on:click="functionBtn(botonForm.valor, botonForm.idUsuario)">{{botonForm.valor}}</button>
+              <button v-on:click="close()">Cancelar</button>
+            </div>
+        </div>
+    </transition>
             </div>
           <!-- <Footer />   -->
         </div>
@@ -88,6 +100,7 @@ export default {
   },
   data:function(){
     return {
+      isVisible: false,
         form:{
                 "idUsuario":"",
                 "nombreUsuario": "",
@@ -143,7 +156,14 @@ export default {
             autoHideDelay: 5000,
             appendToast: true
             })
-        }
+        },
+        open() {
+            this.isVisible = true
+        },
+
+        close() {
+            this.isVisible = false
+        },
   },
   
   mounted:function(){
@@ -176,7 +196,29 @@ export default {
      
   }  
 }
+
+/* export default {
+    name: 'PopupModal',
+
+    data: () => ({
+        isVisible: false,
+    }),
+
+    methods: {
+        open() {
+            this.isVisible = true
+        },
+
+        close() {
+            this.isVisible = false
+        },
+    },
+} */
+
 </script>
+
+
+
 <style scoped>
  .left{
    text-align: left;
@@ -185,4 +227,38 @@ export default {
    margin-left: 15px;
    margin-right: 15px;;
  }
+
+/* css class for the transition */
+.fade-enter-active,
+.fade-leave-active {
+    transition: opacity 0.3s;
+}
+.fade-enter,
+.fade-leave-to {
+    opacity: 0;
+}
+
+.popup-modal {
+    background-color: rgba(0, 0, 0, 0.5);
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 0.5rem;
+    display: flex;
+    align-items: center;
+    z-index: 1;
+}
+
+.window {
+    background: #fff;
+    border-radius: 5px;
+    box-shadow: 2px 4px 8px rgba(0, 0, 0, 0.2);
+    max-width: 480px;
+    margin-left: auto;
+    margin-right: auto;
+    padding: 1rem;
+}
+
 </style>
