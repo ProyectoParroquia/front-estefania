@@ -15,12 +15,13 @@ export default {
    data(){
         return {
             ListaDocumentos:null,
+            tokenLogin: localStorage.getItem('token')
         }
         
     },
     mounted:function(){
         let direccion = "http://localhost:3000/api/tipoDoc/";
-                axios.get(direccion).then( data =>{
+                axios.get(direccion/* ,{headers: { token:this.tokenLogin } } */).then( data =>{
                 this.ListaDocumentos = data.data;
                   }); 
     }

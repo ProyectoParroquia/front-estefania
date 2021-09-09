@@ -1,6 +1,8 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Home from '../views/Home.vue'
+import about from '../views/about.vue'
+
 import Dashboard from '../views/Dashboard.vue';
 import ListTD from '../views/TipoDoc/ListTD.vue';
 import ListTU from '../views/TipoUsu/ListTU.vue';
@@ -21,6 +23,11 @@ const routes = [
     path: '/',
     name: 'Home',
     component: Home
+  },
+  {
+    path: '/about',
+    name: 'about',
+    component: about
   },
   {
     path: '/dashboard',

@@ -30,7 +30,7 @@
                       <div class="col">
                             <label for="" class="control-label col-sm-3">Tipo Doc</label>
                             <div class="col-sm-7">
-                                <SelectTipoDoc  />
+                                <SelectTipoDoc />
                             </div>
                         </div>
                         <div class="col">
@@ -85,6 +85,7 @@ export default {
     name:"Nuevo",
     data:function(){
         return {
+            tokenLogin: localStorage.getItem('token'),
             form:{
                 "nombreUsuario": "",
                 "apellidoUsuario": "",
@@ -112,7 +113,7 @@ export default {
 
             this.form.idTipoDoc_FK = document.getElementById("idTipoDoc_FK").value
 
-            axios.post("http://localhost:3000/api/usuarios",this.form)
+            axios.post("http://localhost:3000/api/usuarios",this.form/* , {headers: { token:this.tokenLogin } } */)
             .then(data =>{
                 console.log(data);
                 if(data.status === 201){

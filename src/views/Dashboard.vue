@@ -21,7 +21,7 @@
                         <th scope="col">TipoDoc</th>
                         <th scope="col">NumeroDoc</th>
                         <th scope="col">Fecha Nacimiento</th>
-                        <th scope="col">Tipo Usuario</th>
+                        <th colspan="2" scope="col">Tipo Usuario</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -33,7 +33,7 @@
                         <td>{{ usuario.tipoDoc.denominacionTipoDocumento }}</td>
                         <td>{{ usuario.numeroDocumentoUsuario }}</td>
                         <td>{{ usuario.fechaNacimientoUsuario }}</td>
-                        <td>{{ usuario.tipoUsuario.nombreTipoUsuario }}</td>
+                        <td>{{ usuario.tipoUsuario.nombreTipoUsuario }}</td>                      
                     </tr>
             
                 </tbody>
@@ -53,7 +53,8 @@ export default {
     data(){
         return {
             ListaUsuarios:null,
-            pagina:1
+            pagina:1,
+            tokenLogin: localStorage.getItem('token')
         }
     },
     components:{
@@ -62,20 +63,16 @@ export default {
     },
     methods:{
             consultarInactivos(){
+                /* credencial_token = localStorage(credencial_token) */
                  let direccion = "http://localhost:3000/api/usuarios/inactivos";
-                axios.get(direccion).then( data =>{
+                axios.get(direccion, { headers: { token:this.tokenLogin } } ).then( data =>{
                     this.ListaUsuarios = data.data;
                     console.log(this.ListaUsuarios)
                 }); 
             },
             consultarActivos(){
                 let direccion = "http://localhost:3000/api/usuarios";
-                axios.get(direccion,{
-                    headers: {
-                         Authorization: '"credencial-token" '+"hola"
-                        
-                        
-                    }})
+                axios.get(direccion, { headers: { token:this.tokenLogin } })
                     .then( data =>{
                         console.log(data)
                 this.ListaUsuarios = data.data;
@@ -91,13 +88,30 @@ export default {
                 this.$router.push('/nuevo');
             }
     },
+    makeToast(titulo,texto,tipo) {
+            this.toastCount++
+            this.$bvToast.toast(texto, {
+            title: titulo,
+            variant: tipo,
+            autoHideDelay: 5000,
+            appendToast: true
+            })
+        },
     mounted:function(){
         let direccion = "http://localhost:3000/api/usuarios";
-                axios.get(direccion).then( data =>{
-                this.ListaUsuarios = data.data;
-                console.log(this.ListaUsuarios)
-                  }); 
-    }
+                axios.get(direccion, { headers: { token:this.tokenLogin } }).then( data =>{
+                    if (data.status===201){
+                    this.ListaUsuarios = data.data;
+                    console.log(this.ListaUsuarios)
+                    }else{
+                    setTimeout(this.salir,1800);
+                    }
+                }); 
+        },
+        salir(){
+            this.$router.push("/");
+        },
+    
 }
 </script>
 <style  scoped>

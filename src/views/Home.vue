@@ -1,12 +1,13 @@
 <template>
   <div class="home">
+    <Header2 />
       <div class="wrapper fadeInDown">
               <div id="formContent">
                 <!-- Tabs Titles -->
 
                 <!-- Icon -->
                 <div class="fadeIn first">
-                  <img src="@/assets/logo.png" id="icon" alt="User Icon" />
+                  <img src="@/assets/SACRIS.png" id="icon" alt="User Icon" />
                 </div>
 
                 <!-- Login Form -->
@@ -31,12 +32,13 @@
 <script>
 import axios from 'axios';
 
+import Header2 from '@/components/Header2.vue';
 export default {
   //nombre del doc en vue
   name: 'Home',
   //importamos conponentes extra
   components: {
-
+    Header2
   },
   //crear variables data y le asignamos una funcion,
   //siempre poner return

@@ -34,9 +34,9 @@
                             <div class="col-sm-7">
                                 <input type="text" class="form-control" name="TipoDoc" id="TipoDoc" v-model="form.idTipoDoc_FK">
                             </div>
-                            <!-- <div class="col-sm-7">
+                             <div class="col-sm-7">
                                 <SelectTipoDoc />
-                            </div> -->
+                            </div>
                         </div>
                         <div class="col">
                           <label for="" class="control-label col-sm-5">Numero Documento</label>
@@ -65,22 +65,42 @@
 
                     <div class="btn-group" role="group" aria-label="Basic example">
                       <button type="button" class="btn btn-primary" v-on:click="editar()" >Editar</button>
+                      <button type="button" class="btn btn-primary" v-on:click="open1()" >Editar tipo Usuario</button>
                       <button type="button" class="btn btn-danger " v-on:click="open()" >{{botonForm.valor}}</button>
                       <button type="button" class="btn btn-dark " v-on:click="salir()"  >Salir</button>
                     </div> 
                 </form>
                 
+                  <transition name="fade">
+                  <div class="popup-modal" v-if="isVisibleTUsu">
+                     <div class="window">
+                      <form action="" method="post">
+                       <label for="" class="control-label col-sm-3">Tipo Usuario</label>
+                            <div class="col-sm-7">
+                                <input type="text" class="form-control" name="TipoUsu" id="TipoUsu" v-model="form.idTipoUsuario_FK">
+                            </div>
+                           <div class="btn-group" role="group" aria-label="Basic example">
+                          <button type="button" class="btn btn-primary" v-on:click="editarTU()" >Editar tipo Usuario</button>
+            
+                           </div>
+                      </form>
+                      <button v-on:click="close1()">Cancelar</button>
+                    </div>
+                 </div>
+                 </transition>
+
 
                  <transition name="fade">
-        <div class="popup-modal" v-if="isVisible">
-            <div class="window">
-              <h4>Esta Seguro De Realizar Esta Accion?</h4>
+                  <div class="popup-modal" v-if="isVisible">
+                     <div class="window">
+                      <h4>Esta Seguro De Realizar Esta Accion?</h4>
 
-              <button class="btn btn-warning" v-on:click="functionBtn(botonForm.valor, botonForm.idUsuario)">{{botonForm.valor}}</button>
-              <button v-on:click="close()">Cancelar</button>
-            </div>
-        </div>
-    </transition>
+                      <button class="btn btn-warning" v-on:click="functionBtn(botonForm.valor, botonForm.idUsuario)">{{botonForm.valor}}</button>
+                      
+                      <button v-on:click="close()">Cancelar</button>
+                    </div>
+                 </div>
+                 </transition>
             </div>
           <!-- <Footer />   -->
         </div>
@@ -88,19 +108,21 @@
 </template>
 <script>
 import Header from '@/components/Header.vue';
-/* import SelectTipoDoc from '@/components/SelectTipoDoc.vue' */
+import SelectTipoDoc from '@/components/SelectTipoDoc.vue'
 //import Footer from '@/components/Footer.vue';
 import axios from 'axios';
 export default {
   name:"Editar",
   components:{
-    Header
-    /* SelectTipoDoc */
+    Header,
+    SelectTipoDoc
     //Footer
   },
   data:function(){
     return {
       isVisible: false,
+      isVisibleTUsu:false,
+      tokenLogin: localStorage.getItem('token'),
         form:{
                 "idUsuario":"",
                 "nombreUsuario": "",
@@ -114,8 +136,8 @@ export default {
             
                 "idTipoDoc_FK":"",
 
-                "estadoUsuario":""
-          /* "token" : "" */ 
+                "estadoUsuario":"",
+
         },
         botonForm:{
           "valor":"",
@@ -130,7 +152,20 @@ export default {
       },
       editar(){
         /* this.form.idTipoDoc_FK = document.getElementById("idTipoDoc_FK").value */
-          axios.put("http://localhost:3000/api/usuarios/actualizar/"+this.form.idUsuario, this.form)
+          axios.put("http://localhost:3000/api/usuarios/actualizar/"+this.form.idUsuario, this.form,{ headers: { token:this.tokenLogin } })
+          .then(data =>{
+            if(data.status===201){  
+              console.log(data)
+              this.makeToast("Actualizado",data.data.success,"info");
+                   setTimeout(this.salir,1800);
+            }else{
+              this.makeToast("Error",data.data.mensage,"danger");
+            }
+          })
+      },
+       editarTU(){
+        /* this.form.idTipoDoc_FK = document.getElementById("idTipoDoc_FK").value */
+          axios.put("http://localhost:3000/api/usuarios/tipoUsu/"+this.form.idUsuario, this.form, { headers: { token:this.tokenLogin } })
           .then(data =>{
             if(data.status===201){  
               console.log(data)
@@ -142,9 +177,10 @@ export default {
           })
       },
       functionBtn(accion, idUsuario){
-            axios.put("http://localhost:3000/api/usuarios/"+accion+"/"+idUsuario)
+        console.log(this.tokenLogin)
+            axios.put("http://localhost:3000/api/usuarios/"+accion+"/"+idUsuario, this.form,{headers: { token:this.tokenLogin } })
               .then( () =>{
-                   this.makeToast("Actualizado","Se a hecho un cambio en el estado","succes");
+                   this.makeToast("Actualizado","Se a hecho un cambio en el estado","success");
                    setTimeout(this.salir,1800);
               })
           },
@@ -164,12 +200,20 @@ export default {
         close() {
             this.isVisible = false
         },
+        open1() {
+            this.isVisibleTUsu = true
+        },
+        close1(){
+            this.isVisibleTUsu = false
+        }
+
   },
   
   mounted:function(){
       this.form.idUsuario = this.$route.params.id;
-      axios.get("http://localhost:3000/api/usuarios/id/"+ this.form.idUsuario)
+      axios.get("http://localhost:3000/api/usuarios/id/"+ this.form.idUsuario, { headers: { token:this.tokenLogin } })
       .then( datos => {
+        
         console.log(datos)
         this.form.nombreUsuario = datos.data.nombreUsuario;
         this.form.apellidoUsuario = datos.data.apellidoUsuario;
@@ -178,18 +222,18 @@ export default {
         this.form.fechaNacimientoUsuario = datos.data.fechaNacimientoUsuario;
         this.form.username = datos.data.credencial.username;
         this.form.idTipoDoc_FK = datos.data.idTipoDoc_FK;
+        this.form.idTipoDoc_FK = datos.data.idTipoUsuario_FK;
 
         this.botonForm.idUsuario = this.form.idUsuario;
 
+        this.form.credencial_token = localStorage.getItem("token");
+        
         let estado = datos.data.estadoUsuario;
         if(estado == "Activo"){
           this.botonForm.valor = "Inhabilitar"
         }else{
           this.botonForm.valor = "Activar"
         }
-
-
-/*         this.form.token = localStorage.getItem("token"); */
         console.log(this.form);
 
       })
